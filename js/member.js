@@ -24,6 +24,7 @@ var saveUsers = function(value){
   if((value || '').length == 0)
     return false;
 
+  var isSuccess = false;
   members = getAll();
   console.log(value);
   var rows = value.split('\n');
@@ -42,23 +43,56 @@ var saveUsers = function(value){
             icon: 'error',
             confirmButtonText: 'ok'
             });
-            return false;
-        }                               
-        if(rowList.length >=2){
-            s = parseFloat(rowList[1] || 0);
         }
-        members.push(buildItems(name, s));     
+        else{                          
+          if(rowList.length >=2){
+              s = parseFloat(rowList[1] || 0);
+          }
+          members.push(buildItems(name, s));    
+          isSuccess = true; 
+        }
       }
     });
     // this mode do not need sorting
     // var data = JSON.stringify(members.sort((a, b) =>  b.s - a.s));
-    localStorage.setItem("members", JSON.stringify(members));        
-    Swal.fire({
-      position: 'top-end',
-      icon: 'success',
-      title: 'saved',
-      showConfirmButton: false,
-      timer: 1500
-    })
+    if(isSuccess){
+      localStorage.setItem("members", JSON.stringify(members));        
+      Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'saved',
+        showConfirmButton: false,
+        timer: 1500
+      })
+    }
+    return isSuccess;
   }
+}
+
+var updateUser = function(name, s){
+  if((name || '').length == 0)
+    return false;
+  
+  if(isNaN(parseFloat(s)))
+    return false;
+  var isSuccess = false;
+  members = getAll();
+  var item = members.filter(x => x.name == name).map(x => {
+    x.s = parseFloat(s)
+  });
+  if(item.length == 0)
+  {
+    Swal.fire({
+      title: 'Error',
+      text: `${name} not found`,
+      icon: 'error',
+      confirmButtonText: 'ok'
+      });
+  }
+  else
+  {
+    localStorage.setItem("members", JSON.stringify(members));
+    isSuccess = true;    
+  }
+  return isSuccess;
 }

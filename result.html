@@ -4,7 +4,7 @@
     <meta name="screen-orientation" content="portrait">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0"/>
-    <title>年会抽奖小程序</title>
+    <title>lucky lottery</title>
     <link rel="stylesheet" type="text/css" href="css/reset.css">
     <link rel="stylesheet" type="text/css" href="css/wall.css">
     <style type="text/css">
@@ -48,7 +48,7 @@
 </head>
 <body>
 <div id="main" class="wall">
-    <div class="result-title">获奖名单</div>
+    <div class="result-title">Awards</div>
     <div class="result-list" v-for="result in results">
         <div v-for="item in result">
             {{item}}
@@ -63,12 +63,14 @@
             results: []
         },
         mounted () {
+            
             let vm = this
             let locals = window.localStorage
             let str_results = []
             // 遍历(排除choosed)
             for(let i = 0; i<localStorage.length; i++){
-                if (localStorage.key(i) !== 'choosed') {
+                if (localStorage.key(i) !== 'choosed' && localStorage.key(i) !== 'members')
+                {
                     str_results.push(localStorage.getItem(localStorage.key(i)))
                 }
             }

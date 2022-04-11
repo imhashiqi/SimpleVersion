@@ -92,8 +92,9 @@
             <!-- <btton class="swal2-confirm swal2-styled" @click="search">Search</btton> -->
             <button class="swal2-cancel swal2-styled" @click="clear">Clear all</button>
         </div>
-        <ve-table style="width:100%;" :max-height="900" :min-height="900" :columns="columns" :table-data="tableData">
-        </ve-table>
+        <ve-table ref="tableRef" style="width:100%;" max-height="calc(100vh - 350px)" :columns="columns"
+            :table-data="tableData" :editOption="editOption" :event-custom-option="eventCustomOption"
+            :sort-option="sortOption" :rowStyleOption="rowStyleOption" border-y></ve-table>
         <div v-show="showEmpty" class="empty-data">no data</div>
         <div class="table-pagination">
             <ve-pagination :total="totalCount" :page-index="pageIndex" :page-size="pageSize"
@@ -107,7 +108,7 @@
     <script type="text/javascript" src="js/member.js"></script>
     <script src="js/sweetalert2.min.js"></script>
     <link rel="stylesheet" href="js/sweetalert2.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/vue-easytable/libs/theme-default/index.css">
+    <link rel="stylesheet" href="https://unpkg.com/vue-easytable/libs/theme-dark/index.css">
     <!-- import Vue -->
     <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <!-- import library -->
@@ -123,6 +124,65 @@
                     pageSize: 20,
                     searchValue: "",
                     showEmpty: false,
+                    eventCustomOption: {
+                        bodyRowEvents: ({ row, rowIndex }) => {
+                            return {
+                                dblclick: (event) => {
+                                    Swal.fire({
+                                        title: `please enter the s of ${row.name}`,
+                                        input: 'text',
+                                        inputAttributes: {
+                                            autocapitalize: 'off'
+                                        },
+                                        showCancelButton: true,
+                                        confirmButtonText: 'ok',
+                                        showLoaderOnConfirm: true,
+                                        preConfirm: (value) => {
+                                            if ((value || '').length == 0) {
+                                                Swal.fire({
+                                                    title: 'Error',
+                                                    text: 'no allow to enter empty',
+                                                    icon: 'error',
+                                                    confirmButtonText: 'ok'
+                                                })
+                                            }
+                                            if(isNaN(parseFloat(value))){
+                                                Swal.fire({
+                                                    title: 'Error',
+                                                    text: 'no allow to enter not a Number',
+                                                    icon: 'error',
+                                                    confirmButtonText: 'ok'
+                                                })
+                                            }
+                                        },
+                                        allowOutsideClick: () => !Swal.isLoading()
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            var s = updateUser(row.name, result.value);
+                                            if(s)
+                                                location.reload(true);
+                                        }
+                                    })
+                                },
+                            };
+                        },
+                    },
+                    rowStyleOption: {
+                        clickHighlight: false,
+                    },
+                    editOption: {
+                        // cell value change
+                        cellValueChange: ({ row, column }) => {
+                            console.log("cellValueChange row::", row);
+                            console.log("cellValueChange column::", column);
+                        },
+                    },
+                    sortOption: {
+                        sortChange: (params) => {
+                            console.log("sortChange::", params);
+                            this.sortChange(params);
+                        },
+                    },
                     columns: [
                         {
                             field: "",
@@ -130,6 +190,7 @@
                             title: "",
                             width: 100,
                             align: "center",
+                            rowKey: 0,
                             renderBodyCell: ({ row, column, rowIndex }, h) => {
                                 return ++rowIndex;
                             },
@@ -140,19 +201,29 @@
                             width: 250,
                             title: "Name",
                             align: "center",
-                            filterCustom: {
-                                defaultVisible: true,
-                            },
+                            rowKey: 1,
+                            edit: true
+                        },
+                        {
+                            field: "s",
+                            key: 'c',
+                            title: 'S',
+                            align: 'center',
+                            sortBy: 'desc',
+                            rowKey: 2,
+                            edit: true
                         },
                         {
                             field: "date",
                             key: "b",
                             title: "Date",
+                            rowKey: 3,
                             align: "left",
+                            edit: true
                         }
                     ],
                     // tableData: [],
-                    sourceData: getAll()
+                    sourceData: getAll().sort((a, b) => b.s - a.s),
                 };
             },
             computed: {
@@ -249,6 +320,25 @@
                 searchConfirm(closeFn) {
                     this.search();
                     closeFn();
+                },
+                sortChange(params) {
+                    this.tableData.sort((a, b) => {
+                        console.log(params);
+                        if (params.s) {
+                            if (params.S === "asc") {
+                                return a.s - b.s;
+                            }
+                            else if (params.s === "desc") {
+                                return b.s - a.s;
+                            } else {
+                                return 0;
+                            }
+                        }
+                    });
+                },
+                startEditingCell(rowKey, colKey, defaultValue) {
+                    debugger;
+                    this.$refs["tableRef"].startEditingCell({ rowKey, colKey, defaultValue });
                 },
             },
             created() {
