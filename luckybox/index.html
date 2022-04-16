@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="screen-orientation" content="portrait">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+    <title>lucky box</title>
+    <link rel="shortcut icon" href="images/lucky record.png">
+</head>
+
+<body id="body">
+    <div id="my-lucky"></div>
+    <img id="handle" src="images/handle.jpg">
+    <div id="bottomBar"></div>
+</body>
+
+<script type="text/javascript" src="js/vue.js"></script>
+<script src="js/lucky-canvas.js"></script>
+<script src="js/logic.js"></script>
+<style>
+    #my-lucky {
+        /* animation: glow 80ms ease-out infinite alternate; */
+        display: inline-block;
+    }
+
+    /* @keyframes glow {
+        0% {
+            box-shadow: 0 0 10px rgba(252, 94, 94, .2), inset 0 0 5px rgba(252, 94, 94, .1), 0 1px 0 #f1f503;
+        }
+        100% {
+            border-color: #f3ef09;
+            box-shadow: 0 0 30px rgba(252, 94, 94, .6), inset 0 0 10px rgba(252, 235, 5, 0.966), 0 1px 0 #fffb00;
+        }
+    } */
+    #handle {
+        vertical-align: 500px;
+        display: inline-block;
+    }
+
+    #bottomBar button {
+        margin-left: 10px;
+        margin-right: 40px;
+        margin-bottom: 10px;
+        background-color: #ff641f;
+        border: 1px solid transparent;
+        height: 30px;
+        line-height: 30px;
+        padding: 0 10px;
+        font-size: 18px;
+        color: #fff;
+        white-space: nowrap;
+        text-align: center;
+        border-radius: 2px;
+        cursor: pointer;
+        min-width: 60px;
+    }
+</style>
+<script type="text/javascript">
+
+    const myLucky = new LuckyCanvas.SlotMachine('#my-lucky', {
+        width: document.documentElement.clientWidth - 200,
+        height: document.documentElement.clientHeight - 50,
+        blocks: [
+            {
+                padding: '80px',
+                background: '#ff9b1f',
+            },
+            {
+                padding: '30px',
+                background: '#ff641f',
+            },
+            // {imgs: [{
+            //     src: 'imges/slot-bg.png',
+            //     width: '100%',
+            //     height: '100%'
+            // }]}
+        ],
+        slots: [
+            {
+                order: getOrders(),
+                speed: 100,
+                direction: 1
+            },
+            {
+                order: getOrders(),
+                speed: 120,
+                direction: -1
+            },
+            {
+                order: getOrders(),
+                speed: 100,
+                direction: 1
+            },
+        ],
+        prizes: getPrice(),
+        defaultConfig: {
+            rowSpacing: '10px',
+            colSpacing: '20px',
+            speed: 200,
+        },
+        end(prize) {
+            console.log(prize);
+        }
+    })
+    function playGame() {
+        myLucky.play()
+        setTimeout(() => {
+            // 随机取一组数据
+            const index = lotteryLogic();
+            // 调用 stop 方法停止游戏
+            myLucky.stop(index);
+            setTimeout(() => {
+                isGoing = false;
+            }, 2000);
+        }, 3000);
+    }
+
+    var isGoing = false;
+    var clickImg = function () {
+        if (isGoing) {
+            return false;
+        }
+        isGoing = true;
+        turnDown();
+        playGame();
+        setTimeout(() => {
+            turnUp();
+        }, 1000);
+    }
+
+    var current = 0;
+    function turnDown() {
+        current = -1;
+        var target = document.getElementById('handle');
+        target.style.transform = 'scaleY(' + current + ')';
+        target.style['vertical-align'] = '250px';
+    }
+
+    function turnUp() {
+        current = 1;
+        var target = document.getElementById('handle');
+        target.style.transform = 'scaleY(' + current + ')';
+        target.style['vertical-align'] = '500px';
+    }
+
+    function switchMode(current) {
+        var val = current['target']['attributes'][0]['value'];
+        setMode(val);
+        location.reload();
+    }
+
+    window.onload = function () {
+        document.getElementById('handle').addEventListener('click', clickImg);
+        generateQueue();
+
+        var bottomBar = document.getElementById('bottomBar');
+        generateMode(bottomBar, switchMode);
+    }
+</script>
+</body>
+
+</html>

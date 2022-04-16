@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="screen-orientation" content="portrait">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+  <title>lucky box</title>
+  <link rel="shortcut icon" href="images/lucky record.png">
+  <link rel="stylesheet" href="js/css/layui.css" media="all">
+</head>
+
+<body id="body">
+  <table id="table" lay-filter="test"></table>
+</body>
+
+</html>
+<script type="text/javascript" src="js/layui.js"></script>
+<script type="text/javascript" src="js/mock.js"></script>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/initData.js"></script>
+<style>
+  body {
+    /* background-color: gray; */
+    width: 100%;
+    height: 100%;
+  }
+
+  /* 偶数行背景色 */
+  .layui-table[lay-even] tr:nth-child(even) {
+    /* background-color: #aaffaa; */
+    background-color: #eeffee;
+  }
+
+  /* 鼠标指向表格时,奇数行背景颜色 */
+  .layui-table tbody tr:hover,
+  .layui-table-hover {
+    background-color: #eeffee;
+  }
+
+  /* 表格头部工具栏背景色 */
+  .layui-table-tool {
+    background-color: #fff;
+  }
+
+  /* 表格头部背景色 */
+  th {
+    background-color: #393D49;
+    /* MediumSeaGreen */
+    color: #fff;
+    font-weight: bold
+  }
+
+  .layui-table-cell {
+    height: auto;
+    line-height: 28px;
+    min-height: 39px;
+  }
+
+  .layui-table-tool-self {
+    display: none;
+  }
+
+  .layui-table .layui-table-view {
+    margin: 0 !important;
+  }
+</style>
+<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">     -->
+    <button class="layui-btn layui-btn-sm" style="background-color: #393D49;" lay-event="add">Add</button>
+    <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deleteAll">Delete ALL</button>
+</div>
+</script>
+
+<script type="text/html" id="barDemo">
+  <a class="layui-btn layui-btn-xs" style="background-color: #393D49;" lay-event="edit">Edit</a>
+  <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">Del</a>
+</script>
+<script type="text/html" id="titleTpl">
+  <img src="{{d.src}}" style="display:inline-block;height: 30px;" >
+</script>
+<script type="text/javascript">
+  layui.use('table', function () {
+    var table = layui.table;
+
+    table.render({
+      elem: '#table'
+      , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+      // ,url: '../demo/table/user/-page=1&limit=20.js'
+      , data: getList()
+      , cellMinWidth: 100 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+      , cols: [[
+        { field: 'id', width: 80, title: 'ID' }
+        , { field: 'name', width: '10%', title: 'PrizeName', minWidth: 100 }
+        , { field: 'img', width: '30%', title: 'Img', templet: '#titleTpl', align: 'center' }
+        , { field: 'src', width: '30%', title: 'ImgPath', }
+        , { field: 's', width: 100, title: 'S', sort: true }
+        , { field: 'group', width: 100, title: 'Group', sort: true }
+        , { field: 'sort', width: 80, title: 'Sort', minWidth: 100, sort: true }
+        , { fixed: 'right', width: '10%', title: 'Action', align: 'center', toolbar: '#barDemo' } //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+      ]]
+      , page: {
+        layout: ['prev', 'page', 'next', 'count', 'limit', 'refresh', 'skip']//自定义布局顺序 
+        , limit: 10	//初始  每页几条数据
+        , limits: [10, 15]	//可以选择的 每页几条数据 
+        , groups: 10 	//最多几个跳页按钮
+        , first: false //不显示首页
+        , last: false //不显示尾页
+        , theme: '#393D49'
+      }
+    });
+    //头工具栏事件
+    table.on('toolbar(test)', function (obj) {
+      var checkStatus = table.checkStatus(obj.config.id);
+      switch (obj.event) {
+        case 'deleteAll':
+          layer.confirm('Do you delete all data?', { icon: 3, title: 'Warn' }, function (index) {
+            localStorage.clear();
+            table.reload('table', {
+              data: getList()
+            });
+            layer.close(index);
+          });
+          break;
+        case 'add':
+          layer.open({
+            //formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
+            title: 'Add Prize',
+            area: ['650px', '450px'],
+            btnAlign: 'c',
+            closeBtn: '1',//右上角的关闭
+            content: `<form class="layui-form" action="">
+  <div class="layui-form-item">
+    <label class="layui-form-label">PrizeName :</label>
+    <div class="layui-input-block">
+      <input type="text" id='name' name="title" required  lay-verify="required" placeholder="please enter a name" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">ImgPath :</label>
+    <div class="layui-input-block">
+      <div class="layui-form-mid layui-word-aux">/images/</div>
+      <input type="text" id='path' name="title" required  lay-verify="required" placeholder="please enter the name of image in the images folder, such as phone.jpg" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">S :</label>
+    <div class="layui-input-block">
+      <input type="text"  id='s' name="title" required  lay-verify="required" placeholder="please enter s" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">Sort :</label>
+    <div class="layui-input-block">
+      <input type="text" id='sort' name="title" required  lay-verify="required" placeholder="please enter sort" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">Group :</label>
+    <div class="layui-input-block">
+      <input type="text" id='group' name="title" required  lay-verify="required" placeholder="if u not enter, system will default" class="layui-input">
+    </div>
+  </div>
+</form>`,
+            btn: ['Add', 'Cancel'],
+            yes: function (index, layero) {
+              var name = $('#name').val();
+              var path = $('#path').val();
+              var s = $('#s').val();
+              var group = $('#group').val();
+              var sort = $('#sort').val();
+
+              var success = addItem(name, path, sort, group, s);
+              if (success) {
+                layer.alert('success', 2000);
+                layer.close(index);
+                table.reload('table', {
+                  data: getList()
+                });
+              }
+            },
+            no: function (index) {
+              layer.close(index);
+              return false;//点击按钮按钮不想让弹层关闭就返回false          
+            }
+          });
+          break;
+        // case 'reload':
+        //   debugger;
+        //   var search = $("#demoReload").val();
+        //   if ((search || '').lenght > 0) {
+        //     table.reload('table',
+        //       {
+        //         page:
+        //         {
+        //           curr: 1 //重新从第 1 页开始
+        //         },
+        //         where: {
+        //           key:{
+        //           name: search}
+        //         }
+        //       });
+        //   }
+        //   break;
+      };
+    });
+
+    //监听行工具事件
+    table.on('tool(test)', function (obj) {
+      var data = obj.data;
+      //console.log(obj)
+      if (obj.event === 'del') {
+        layer.confirm('do you want to delete it', function (index) {
+          var data = obj['data'];
+          var success = deleteItem(data.id, data.group);
+          if (success) {
+            layer.alert('success.', 2000);
+            layer.close(index);
+            table.reload('table', {
+              data: getList()
+            });
+          }
+        });
+      }
+      else if (obj.event === 'edit') {
+        var data = obj['data'];
+        layer.open({
+          //formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
+          title: 'Add Prize',
+          area: ['500px', '250px'],
+          btnAlign: 'c',
+          closeBtn: '1',//右上角的关闭
+          content: `<form class="layui-form" action="">
+  <div class="layui-form-item">
+    <label class="layui-form-label">PrizeName :</label>
+    <div class="layui-input-block">
+      <div class="layui-form-mid layui-word-aux">${data.name}</div>
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">S :</label>
+    <div class="layui-input-block">
+      <input type="text"  id='us' name="title" required  lay-verify="required" placeholder="please enter s" class="layui-input" value ='${data.s}'>
+    </div>
+  </div>
+</form>`,
+          btn: ['Add', 'Cancel'],
+          yes: function (index, layero) {
+            var s = $('#us').val();
+
+            var success = updateItem(data.id, s, data.group);
+            if (success) {
+              layer.alert('success', 2000);
+              layer.close(index);
+              table.reload('table', {
+                data: getList()
+              });
+            }
+          },
+          no: function (index) {
+            layer.close(index);
+            return false;
+          }
+        });
+      }
+    });
+  });
+</script>
