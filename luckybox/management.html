@@ -102,8 +102,8 @@
       ]]
       , page: {
         layout: ['prev', 'page', 'next', 'count', 'limit', 'refresh', 'skip']//自定义布局顺序 
-        , limit: 10	//初始  每页几条数据
-        , limits: [10, 15]	//可以选择的 每页几条数据 
+        , limit: 30	//初始  每页几条数据
+        , limits: [10, 30, 50]	//可以选择的 每页几条数据 
         , groups: 10 	//最多几个跳页按钮
         , first: false //不显示首页
         , last: false //不显示尾页
@@ -173,7 +173,7 @@
 
               var success = addItem(name, path, sort, group, s);
               if (success) {
-                layer.alert('success', 2000);
+                layer.alert('success',  {time : 1000});
                 layer.close(index);
                 table.reload('table', {
                   data: getList()
@@ -215,7 +215,7 @@
           var data = obj['data'];
           var success = deleteItem(data.id, data.group);
           if (success) {
-            layer.alert('success.', 2000);
+            layer.alert('success.',  {time : 1000});
             layer.close(index);
             table.reload('table', {
               data: getList()
@@ -251,7 +251,7 @@
 
             var success = updateItem(data.id, s, data.group);
             if (success) {
-              layer.alert('success', 2000);
+              layer.alert('success',  {time : 1000});
               layer.close(index);
               table.reload('table', {
                 data: getList()

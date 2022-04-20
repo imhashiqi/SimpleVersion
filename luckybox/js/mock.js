@@ -55,22 +55,26 @@ var getList = function () {
   return JSON.parse(localStorage.getItem("list")) || [];
 };
 
+var getAllResult = function () {
+  return JSON.parse(localStorage.getItem("allResult")) || [];
+};
+
 var defaultPath = "images/";
 var addItem = function (name, path, sort, group, s = 0) {
   var isSucess = false;
   if ((name || "").length == 0) {
-    layer.alert("name no allow empty", 2000);
+    layer.alert("name no allow empty",  {time : 2000});
     return false;
   }
   if ((path || "").length == 0) {
-    layer.alert("imagePath no allow empty", 2000);
+    layer.alert("imagePath no allow empty",  {time : 2000});
     return false;
   }
   var soures = getAllData();
   var data = soures[group || 0] || [];
   var item = data.filter((x) => x.name == name);
   if (item.length > 0) {
-    layer.alert(`${name} is exited`, 2000);
+    layer.alert(`${name} is exited`,  {time : 2000});
     return false;
   }
   s = isNaN(parseFloat(s)) ? 0 : parseFloat(s);
@@ -80,7 +84,7 @@ var addItem = function (name, path, sort, group, s = 0) {
   soures[group || 0] = data;
 
   var list = getList();
-  list = data;
+  list.push(item);
   localStorage.setItem("soures", JSON.stringify(soures));
   localStorage.setItem("list", JSON.stringify(list));
   insId();
@@ -91,7 +95,7 @@ var addItem = function (name, path, sort, group, s = 0) {
 var updateItem = function (id, s, group) {
   var isSucess = false;
   if ((id || "").length == 0) {
-    layer.alert("id no allow null", 2000);
+    layer.alert("id no allow null",  {time : 2000});
     return false;
   }
   s = isNaN(parseFloat(s)) ? 0 : parseFloat(s);
@@ -101,31 +105,65 @@ var updateItem = function (id, s, group) {
   if (data.length == 0) {
     layer.alert(
       "no data can be modify, please refesh page and try again",
-      2000
+      {time : 2000}
     );
     return false;
   }
-  var item = data.filter((x) => x.id == id);
-  if (item.length == 0) {
-    layer.alert(`no found id[${id}], please refesh page and try again`, 2000);
+  var thisSuccess = false;
+  var targetIndex, targetItem;
+  for(var i = 0; i < data.length; i ++){
+    var thisItem = data[i];
+    if(thisItem.id != id)
+      continue;
+    
+    targetIndex = i;
+    targetItem = thisItem;
+    thisItem['s'] = isNaN(parseFloat(s)) ? 0 : parseFloat(s);
+    data[i] = thisItem;
+    thisSuccess = true;
+  }
+  // var item = data.filter((x) => x.id == id);
+  if (!thisSuccess) {
+    layer.alert(`no found id[${id}], please refesh page and try again`,  {time : 2000});
     return false;
   }
-
-  item[0]["s"] = isNaN(parseFloat(s)) ? 0 : parseFloat(s);
-  data = data.filter((x) => x.id != id);
-  data.push(item[0]);
+  scoures[group || 0] = data;
   var list = getList();
-  list = data;
+  for(var i = 0; i < list.length; i ++){
+    var thisItem = list[i];
+    if(thisItem['id'] != id)
+      continue;
+    
+    list[i] = targetItem;
+  }
   localStorage.setItem("list", JSON.stringify(list));
   localStorage.setItem("soures", JSON.stringify(scoures));
+  updateS(targetIndex, s, data);
   isSucess = true;
   return isSucess;
 };
 
+function updateS(index, s, data){
+  var allResult = getAllResult();
+  var newResult = [];
+  for(var i = 0; i < allResult.length; i ++){
+    var currentItem = allResult[i];
+    if((currentItem['index'] ||[]).includes(index)){
+      currentItem['score'] = 0;
+      for(var y = 0; y < currentItem['index'].length; y ++){
+        var thisIndex = currentItem['index'][y];
+        currentItem['score'] += data[thisIndex]['s'];
+      }
+    }
+    newResult.push(currentItem);
+  }
+  localStorage.setItem('allResult', JSON.stringify(newResult));
+}
+
 var deleteItem = function (id, group) {
   var isSucess = false;
   if ((id || "").length == 0) {
-    layer.alert("id no allow null", 2000);
+    layer.alert("id no allow null",  {time :  {time : 2000}});
     return false;
   }
 
@@ -134,13 +172,13 @@ var deleteItem = function (id, group) {
   if (data.length == 0) {
     layer.alert(
       "no data can be modify, please refesh page and try again",
-      2000
+      {time : 2000}
     );
     return false;
   }
   var item = data.filter((x) => x.id == id);
   if (item.length == 0) {
-    layer.alert(`no found id[${id}], please refesh page and try again`, 2000);
+    layer.alert(`no found id[${id}], please refesh page and try again`,  {time : 2000});
     return false;
   }
 

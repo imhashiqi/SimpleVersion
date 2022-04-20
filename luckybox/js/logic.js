@@ -2,7 +2,7 @@ var mode = JSON.parse(localStorage.getItem('mode')) || 0;
 
 var getData = function () {
   var scoures = JSON.parse(localStorage.getItem("soures")) || {};
-  return scoures[mode];
+  return scoures[mode] ||[];
 };
 
 var getAllResult = function () {
@@ -16,7 +16,7 @@ var config = {
 
 var getPrice = function () {
   return getData()
-    .sort((a, b) => a.sort - b.sort)
+    .sort((a, b) => a.id - b.id)
     .map((x) => {
       var n = {
         background: "#fffffd",
@@ -34,7 +34,8 @@ var getPrice = function () {
 };
 
 var getOrders = function () {
-  return Array.from(Array(getPrice().length).keys()).sort(randomsort);
+  var data = Array.from(Array(getPrice().length).keys()).sort(randomsort);
+  return data;
 };
 
 function randomsort(a, b) {
@@ -107,6 +108,7 @@ var lotteryLogic = function () {
     )
     .sort((a, b) => a.result - b.result);
   var index = diff.slice(0, 1);
+  // console.log(index);
   return index[0]["index"];
 };
 
