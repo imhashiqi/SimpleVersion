@@ -69,12 +69,14 @@
 <script type="text/html" id="toolbarDemo">
   <!-- <div class="layui-btn-container"> -->
     search ：
-  <div class="layui-inline">
-    <input class="layui-input" name="id" id="demoReload"  style="width:200px;height: 32px !important;" placeholder="search content">
-  </div>
-  <button class="layui-btn layui-btn-sm" style="background-color: #393D49;" id="searchClick" lay-event="reload">search</button>
-    <button class="layui-btn layui-btn-sm" style="background-color: #393D49;" lay-event="add">Add</button>
-    <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deleteAll">Delete ALL</button>
+<div class="layui-inline">
+  <input class="layui-input" name="id" id="demoReload" style="width:200px;height: 32px !important;"
+    placeholder="search content">
+</div>
+<button class="layui-btn layui-btn-sm" style="background-color: #393D49;" lay-event="reload">Search</button>
+<button class="layui-btn layui-btn-sm" style="background-color: #393D49;" lay-event="resetSearch">ResetRearch</button>
+<button class="layui-btn layui-btn-sm" style="background-color: #393D49;" lay-event="add">Add</button>
+<button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deleteAll">Delete ALL</button>
 <!-- </div> -->
 </script>
 
@@ -96,9 +98,9 @@
       , cellMinWidth: 100
       , cols: [[
         { field: 'id', width: 80, title: 'ID' }
-        , { field: 'name', width: '10%', title: 'PrizeName', minWidth: 100 }
-        , { field: 'img', width: '30%', title: 'Img', templet: '#titleTpl', align: 'center' }
-        , { field: 'src', width: '30%', title: 'ImgPath', }
+        , { field: 'name', width: '15%', title: 'PrizeName', minWidth: 100 }
+        , { field: 'img', width: '25%', title: 'Img', templet: '#titleTpl', align: 'center' }
+        , { field: 'src', width: '25%', title: 'ImgPath', }
         , { field: 's', width: '8%', title: 'S', sort: true }
         , { field: 'group', width: '10%', title: 'Group', sort: true }
         , { fixed: 'right', width: '10%', title: 'Action', align: 'center', toolbar: '#barDemo' } //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
@@ -169,7 +171,7 @@
 
               var success = addItem(name, path, group, s);
               if (success) {
-                layer.alert('success',  {time : 1000});
+                layer.alert('success', { time: 1000 });
                 layer.close(index);
                 table.reload('table', {
                   data: getList()
@@ -178,11 +180,11 @@
             },
             no: function (index) {
               layer.close(index);
-              return false;//点击按钮按钮不想让弹层关闭就返回false          
+              return false;
             }
           });
           break;
-        case 'reload':          
+        case 'reload':
           var val = $("#demoReload").val();
           if ((val || '').length > 0) {
             table.reload('table',
@@ -191,9 +193,21 @@
                 {
                   curr: 1
                 },
-                data : search(val)
+                data: search(val)
               });
+            $('#demoReload').val(val);
           }
+          break;
+        case 'resetSearch':
+          table.reload('table',
+            {
+              page:
+              {
+                curr: 1
+              },
+              data: getList()
+            });
+          $('#demoReload').val('');
           break;
       };
     });
@@ -207,7 +221,7 @@
           var data = obj['data'];
           var success = deleteItem(data.id, data.group);
           if (success) {
-            layer.alert('success.',  {time : 1000});
+            layer.alert('success.', { time: 1000 });
             layer.close(index);
             table.reload('table', {
               data: getList()
@@ -243,7 +257,7 @@
 
             var success = updateItem(data.id, s, data.group);
             if (success) {
-              layer.alert('success',  {time : 1000});
+              layer.alert('success', { time: 1000 });
               layer.close(index);
               table.reload('table', {
                 data: getList()
@@ -258,11 +272,11 @@
       }
     });
   });
-    
-    function search(val){
-      if((val || '').length == 0)
-        return getList();
-      val = val.trim();
-      return getList().filter(x => x.name == val);
-    }
+
+  function search(val) {
+    if ((val || '').length == 0)
+      return getList();
+    val = val.trim();
+    return getList().filter(x => x.name == val);
+  }
 </script>
