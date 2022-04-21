@@ -10,8 +10,9 @@ var getAllResult = function () {
 };
 
 var config = {
-  width: "",
-  top: "20%",
+  width: "90%",
+  top: "5%",
+  height: '90%'
 };
 
 var getPrice = function () {
@@ -19,13 +20,14 @@ var getPrice = function () {
     .sort((a, b) => a.id - b.id)
     .map((x) => {
       var n = {
-        background: "#fffffd",
+        background: "lightgray",
         borderRadius: "20px",
         imgs: [
           {
             width: config.width,
             top: config.top,
             src: x.src,
+            height:config.height
           },
         ],
       };

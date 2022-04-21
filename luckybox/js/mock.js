@@ -60,7 +60,7 @@ var getAllResult = function () {
 };
 
 var defaultPath = "images/";
-var addItem = function (name, path, sort, group, s = 0) {
+var addItem = function (name, path, group, s = 0) {
   var isSucess = false;
   if ((name || "").length == 0) {
     layer.alert("name no allow empty",  {time : 2000});
@@ -79,7 +79,7 @@ var addItem = function (name, path, sort, group, s = 0) {
   }
   s = isNaN(parseFloat(s)) ? 0 : parseFloat(s);
 
-  var item = buildItem(name, defaultPath + path, sort, group, s);
+  var item = buildItem(name, defaultPath + path, group, s);
   data.push(item);
   soures[group || 0] = data;
 
@@ -138,12 +138,12 @@ var updateItem = function (id, s, group) {
   }
   localStorage.setItem("list", JSON.stringify(list));
   localStorage.setItem("soures", JSON.stringify(scoures));
-  updateS(targetIndex, s, data);
+  updateS(targetIndex, data);
   isSucess = true;
   return isSucess;
 };
 
-function updateS(index, s, data){
+function updateS(index, data){
   var allResult = getAllResult();
   var newResult = [];
   for(var i = 0; i < allResult.length; i ++){
@@ -192,13 +192,12 @@ var deleteItem = function (id, group) {
   return isSucess;
 };
 
-var buildItem = function (name, path, sort, group, s) {
+var buildItem = function (name, path, group, s) {
   var id = getId();
   return {
     id: id,
     name: name,
     src: path,
-    sort: isNaN(parseInt(sort)) ? 0 : parseInt(sort),
     group: group || 0,
     s: s,
   };

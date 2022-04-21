@@ -67,10 +67,15 @@
   }
 </style>
 <script type="text/html" id="toolbarDemo">
-  <div class="layui-btn-container">     -->
+  <!-- <div class="layui-btn-container"> -->
+    search ：
+  <div class="layui-inline">
+    <input class="layui-input" name="id" id="demoReload"  style="width:200px;height: 32px !important;" placeholder="search content">
+  </div>
+  <button class="layui-btn layui-btn-sm" style="background-color: #393D49;" id="searchClick" lay-event="reload">search</button>
     <button class="layui-btn layui-btn-sm" style="background-color: #393D49;" lay-event="add">Add</button>
     <button class="layui-btn layui-btn-danger layui-btn-sm" lay-event="deleteAll">Delete ALL</button>
-</div>
+<!-- </div> -->
 </script>
 
 <script type="text/html" id="barDemo">
@@ -87,23 +92,21 @@
     table.render({
       elem: '#table'
       , toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
-      // ,url: '../demo/table/user/-page=1&limit=20.js'
       , data: getList()
-      , cellMinWidth: 100 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+      , cellMinWidth: 100
       , cols: [[
         { field: 'id', width: 80, title: 'ID' }
         , { field: 'name', width: '10%', title: 'PrizeName', minWidth: 100 }
         , { field: 'img', width: '30%', title: 'Img', templet: '#titleTpl', align: 'center' }
         , { field: 'src', width: '30%', title: 'ImgPath', }
-        , { field: 's', width: 100, title: 'S', sort: true }
-        , { field: 'group', width: 100, title: 'Group', sort: true }
-        , { field: 'sort', width: 80, title: 'Sort', minWidth: 100, sort: true }
+        , { field: 's', width: '8%', title: 'S', sort: true }
+        , { field: 'group', width: '10%', title: 'Group', sort: true }
         , { fixed: 'right', width: '10%', title: 'Action', align: 'center', toolbar: '#barDemo' } //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
       ]]
       , page: {
         layout: ['prev', 'page', 'next', 'count', 'limit', 'refresh', 'skip']//自定义布局顺序 
-        , limit: 30	//初始  每页几条数据
-        , limits: [10, 30, 50]	//可以选择的 每页几条数据 
+        , limit: 20	//初始  每页几条数据
+        , limits: [20, 30, 50]	//可以选择的 每页几条数据 
         , groups: 10 	//最多几个跳页按钮
         , first: false //不显示首页
         , last: false //不显示尾页
@@ -127,7 +130,7 @@
           layer.open({
             //formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
             title: 'Add Prize',
-            area: ['650px', '450px'],
+            area: ['650px', '400px'],
             btnAlign: 'c',
             closeBtn: '1',//右上角的关闭
             content: `<form class="layui-form" action="">
@@ -151,12 +154,6 @@
     </div>
   </div>
   <div class="layui-form-item">
-    <label class="layui-form-label">Sort :</label>
-    <div class="layui-input-block">
-      <input type="text" id='sort' name="title" required  lay-verify="required" placeholder="please enter sort" class="layui-input">
-    </div>
-  </div>
-  <div class="layui-form-item">
     <label class="layui-form-label">Group :</label>
     <div class="layui-input-block">
       <input type="text" id='group' name="title" required  lay-verify="required" placeholder="if u not enter, system will default" class="layui-input">
@@ -169,9 +166,8 @@
               var path = $('#path').val();
               var s = $('#s').val();
               var group = $('#group').val();
-              var sort = $('#sort').val();
 
-              var success = addItem(name, path, sort, group, s);
+              var success = addItem(name, path, group, s);
               if (success) {
                 layer.alert('success',  {time : 1000});
                 layer.close(index);
@@ -186,23 +182,19 @@
             }
           });
           break;
-        // case 'reload':
-        //   debugger;
-        //   var search = $("#demoReload").val();
-        //   if ((search || '').lenght > 0) {
-        //     table.reload('table',
-        //       {
-        //         page:
-        //         {
-        //           curr: 1 //重新从第 1 页开始
-        //         },
-        //         where: {
-        //           key:{
-        //           name: search}
-        //         }
-        //       });
-        //   }
-        //   break;
+        case 'reload':          
+          var val = $("#demoReload").val();
+          if ((val || '').length > 0) {
+            table.reload('table',
+              {
+                page:
+                {
+                  curr: 1
+                },
+                data : search(val)
+              });
+          }
+          break;
       };
     });
 
@@ -266,4 +258,11 @@
       }
     });
   });
+    
+    function search(val){
+      if((val || '').length == 0)
+        return getList();
+      val = val.trim();
+      return getList().filter(x => x.name == val);
+    }
 </script>

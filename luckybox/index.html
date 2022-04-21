@@ -43,7 +43,7 @@
         margin-left: 10px;
         margin-right: 40px;
         margin-bottom: 10px;
-        background-color: #ff641f;
+        background-color: #d0351f;
         border: 1px solid transparent;
         height: 30px;
         line-height: 30px;
@@ -60,16 +60,18 @@
 <script type="text/javascript">
 
     const myLucky = new LuckyCanvas.SlotMachine('#my-lucky', {
-        width: document.documentElement.clientWidth - 200,
+        width: document.documentElement.clientWidth - 440,
         height: document.documentElement.clientHeight - 50,
         blocks: [
             {
                 padding: '80px',
-                background: '#ff9b1f',
+                background: '#d0351f', 
+                borderRadius : '30px',
             },
             {
                 padding: '30px',
-                background: '#ff641f',
+                background: '#fff',
+                borderRadius : '20px',
             },
             // {imgs: [{
             //     src: 'imges/slot-bg.png',
@@ -80,25 +82,24 @@
         slots: [
             {
                 order: getOrders(),
-                speed: 100,
+                speed: 50,
                 direction: 1
             },
             {
                 order: getOrders(),
-                speed: 120,
+                speed: 50,
                 direction: -1
             },
             {
                 order: getOrders(),
-                speed: 100,
+                speed: 50,
                 direction: 1
             },
         ],
         prizes: getPrice(),
         defaultConfig: {
-            rowSpacing: '10px',
-            colSpacing: '20px',
-            speed: 200,
+            rowSpacing: '20px',
+            colSpacing: '20px'
         },
         end(prize) {
             console.log(prize);
