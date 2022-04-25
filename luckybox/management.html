@@ -65,6 +65,11 @@
   .layui-table .layui-table-view {
     margin: 0 !important;
   }
+
+  body .warn-class .layui-layer-btn a.layui-layer-btn0 {
+    background: #FF5722;
+    border: #FF5722 solid 1px;
+  }
 </style>
 <script type="text/html" id="toolbarDemo">
   <!-- <div class="layui-btn-container"> -->
@@ -107,8 +112,8 @@
       ]]
       , page: {
         layout: ['prev', 'page', 'next', 'count', 'limit', 'refresh', 'skip']//自定义布局顺序 
-        , limit: 20	//初始  每页几条数据
-        , limits: [20, 30, 50]	//可以选择的 每页几条数据 
+        , limit: 100	//初始  每页几条数据
+        , limits: [100, 150]	//可以选择的 每页几条数据 
         , groups: 10 	//最多几个跳页按钮
         , first: false //不显示首页
         , last: false //不显示尾页
@@ -120,13 +125,19 @@
       var checkStatus = table.checkStatus(obj.config.id);
       switch (obj.event) {
         case 'deleteAll':
-          layer.confirm('Do you delete all data?', { icon: 3, title: 'Warn' }, function (index) {
-            localStorage.clear();
-            table.reload('table', {
-              data: getList()
+          layer.confirm('Do you delete all data?',
+            {
+              icon: 3,
+              title: 'Warn',
+              skin: 'warn-class',
+              btn: ['Yes', 'Cancel']
+            }, function (index) {
+              localStorage.clear();
+              table.reload('table', {
+                data: getList()
+              });
+              layer.close(index);
             });
-            layer.close(index);
-          });
           break;
         case 'add':
           layer.open({
@@ -171,7 +182,11 @@
 
               var success = addItem(name, path, group, s);
               if (success) {
-                layer.alert('success', { time: 1000 });
+                layer.alert('success', {
+                  time: 1000,
+                  title: 'Notification',
+                  btn: ['Ok']
+                });
                 layer.close(index);
                 table.reload('table', {
                   data: getList()
@@ -217,23 +232,34 @@
       var data = obj.data;
       //console.log(obj)
       if (obj.event === 'del') {
-        layer.confirm('do you want to delete it', function (index) {
-          var data = obj['data'];
-          var success = deleteItem(data.id, data.group);
-          if (success) {
-            layer.alert('success.', { time: 1000 });
-            layer.close(index);
-            table.reload('table', {
-              data: getList()
-            });
+        layer.confirm('Do you want to delete it',
+          {
+            icon: 3,
+            title: 'Warn',
+            skin: 'warn-class',
+            btn: ['Yes', 'Cancel']
           }
-        });
+          , function (index) {
+            var data = obj['data'];
+            var success = deleteItem(data.id, data.group);
+            if (success) {
+              layer.alert('success.', {
+                time: 1000,
+                title: 'Notification',
+                btn: ['Ok']
+              });
+              layer.close(index);
+              table.reload('table', {
+                data: getList()
+              });
+            }
+          });
       }
       else if (obj.event === 'edit') {
         var data = obj['data'];
         layer.open({
           //formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
-          title: 'Add Prize',
+          title: 'Modify',
           area: ['500px', '250px'],
           btnAlign: 'c',
           closeBtn: '1',//右上角的关闭
@@ -251,13 +277,17 @@
     </div>
   </div>
 </form>`,
-          btn: ['Add', 'Cancel'],
+          btn: ['Modify', 'Cancel'],
           yes: function (index, layero) {
             var s = $('#us').val();
 
             var success = updateItem(data.id, s, data.group);
             if (success) {
-              layer.alert('success', { time: 1000 });
+              layer.alert('success', {
+                time: 1000,
+                title: 'Notification',
+                btn: ['Ok']
+              });
               layer.close(index);
               table.reload('table', {
                 data: getList()

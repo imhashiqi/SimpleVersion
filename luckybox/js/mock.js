@@ -1,41 +1,3 @@
-var data = [
-  {
-    id: "",
-    src: "",
-    name: "a",
-    sort: 1,
-    s: 0,
-  },
-  {
-    id: "",
-    src: "",
-    name: "b",
-    sort: 1,
-    s: 0,
-  },
-  {
-    id: "",
-    src: "",
-    name: "c",
-    sort: 1,
-    s: 0,
-  },
-  {
-    id: "",
-    src: "",
-    name: "a",
-    sort: 1,
-    s: 0,
-  },
-  {
-    id: "",
-    src: "",
-    name: "a",
-    sort: 1,
-    s: 0,
-  },
-];
-
 var getId = function () {
   var id = JSON.parse(localStorage.getItem("id")) || 1;
   return id;
@@ -63,18 +25,18 @@ var defaultPath = "images/";
 var addItem = function (name, path, group, s = 0) {
   var isSucess = false;
   if ((name || "").length == 0) {
-    layer.alert("name no allow empty",  {time : 2000});
+    warnAlert("name no allow empty");
     return false;
   }
   if ((path || "").length == 0) {
-    layer.alert("imagePath no allow empty",  {time : 2000});
+    warnAlert("imagePath no allow empty");
     return false;
   }
   var soures = getAllData();
   var data = soures[group || 0] || [];
   var item = data.filter((x) => x.name == name);
   if (item.length > 0) {
-    layer.alert(`${name} is exited`,  {time : 2000});
+    warnAlert(`${name} is exited`);
     return false;
   }
   s = isNaN(parseFloat(s)) ? 0 : parseFloat(s);
@@ -95,7 +57,7 @@ var addItem = function (name, path, group, s = 0) {
 var updateItem = function (id, s, group) {
   var isSucess = false;
   if ((id || "").length == 0) {
-    layer.alert("id no allow null",  {time : 2000});
+    warnAlert("id no allow null");
     return false;
   }
   s = isNaN(parseFloat(s)) ? 0 : parseFloat(s);
@@ -103,10 +65,7 @@ var updateItem = function (id, s, group) {
   var scoures = getAllData();
   var data = scoures[group || 0] || [];
   if (data.length == 0) {
-    layer.alert(
-      "no data can be modify, please refesh page and try again",
-      {time : 2000}
-    );
+    warnAlert("no data can be modify, please refesh page and try again");
     return false;
   }
   var thisSuccess = false;
@@ -124,7 +83,7 @@ var updateItem = function (id, s, group) {
   }
   // var item = data.filter((x) => x.id == id);
   if (!thisSuccess) {
-    layer.alert(`no found id[${id}], please refesh page and try again`,  {time : 2000});
+    warnAlert(`no found id[${id}], please refesh page and try again`);
     return false;
   }
   scoures[group || 0] = data;
@@ -135,6 +94,7 @@ var updateItem = function (id, s, group) {
       continue;
     
     list[i] = targetItem;
+    break;
   }
   localStorage.setItem("list", JSON.stringify(list));
   localStorage.setItem("soures", JSON.stringify(scoures));
@@ -145,7 +105,6 @@ var updateItem = function (id, s, group) {
 
 function updateS(index, data){
   var allResult = getAllResult();
-  var newResult = [];
   for(var i = 0; i < allResult.length; i ++){
     var currentItem = allResult[i];
     if((currentItem['index'] ||[]).includes(index)){
@@ -154,38 +113,34 @@ function updateS(index, data){
         var thisIndex = currentItem['index'][y];
         currentItem['score'] += data[thisIndex]['s'];
       }
+      allResult[i] = currentItem;
     }
-    newResult.push(currentItem);
   }
-  localStorage.setItem('allResult', JSON.stringify(newResult));
+  localStorage.setItem('allResult', JSON.stringify(allResult));
 }
 
 var deleteItem = function (id, group) {
   var isSucess = false;
   if ((id || "").length == 0) {
-    layer.alert("id no allow null",  {time :  {time : 2000}});
+    warnAlert("id no allow null");
     return false;
   }
 
   var sources = getAllData();
   var data = sources[group || 0] || [];
   if (data.length == 0) {
-    layer.alert(
-      "no data can be modify, please refesh page and try again",
-      {time : 2000}
-    );
+    warnAlert("no data can be modify, please refesh page and try again");
     return false;
   }
   var item = data.filter((x) => x.id == id);
   if (item.length == 0) {
-    layer.alert(`no found id[${id}], please refesh page and try again`,  {time : 2000});
+    warnAlert(`no found id[${id}], please refesh page and try again`);
     return false;
   }
 
   data = data.filter((x) => x.id != id);
   sources[group || 0] = data;
-  var list = getList();
-  list = data;
+  var list = getList().filter((x) => x.id != id);  
   localStorage.setItem("list", JSON.stringify(list));
   localStorage.setItem("soures", JSON.stringify(sources));
   isSucess = true;
@@ -203,3 +158,11 @@ var buildItem = function (name, path, group, s) {
   };
 };
 
+function warnAlert(msg, time = 3000){
+  layer.alert(msg
+    ,  {
+      time : time,
+      btn : ['Ok'],
+      title: 'Warn'
+    });
+}

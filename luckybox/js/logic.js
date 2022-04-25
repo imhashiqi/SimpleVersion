@@ -10,9 +10,9 @@ var getAllResult = function () {
 };
 
 var config = {
-  width: "90%",
-  top: "5%",
-  height: '90%'
+  width: "100%",
+  top: "",
+  height: '100%'
 };
 
 var getPrice = function () {
@@ -20,7 +20,7 @@ var getPrice = function () {
     .sort((a, b) => a.id - b.id)
     .map((x) => {
       var n = {
-        background: "lightgray",
+        background: "#fff",
         borderRadius: "20px",
         imgs: [
           {
@@ -32,11 +32,12 @@ var getPrice = function () {
         ],
       };
       return n;
-    });
+    });  
 };
 
 var getOrders = function () {
   var data = Array.from(Array(getPrice().length).keys()).sort(randomsort);
+  console.log(data);
   return data;
 };
 
@@ -117,7 +118,6 @@ var lotteryLogic = function () {
 var generateMode = function (targetDocument, callback) {
   var html = '';
   var data = JSON.parse(localStorage.getItem("soures"));
-  console.log(data);
   for (var item in data) {
     var currentItems = data[item];
     if ((currentItems || []).length == 0) continue;

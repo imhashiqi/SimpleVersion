@@ -8,11 +8,15 @@
         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
     <title>lucky box</title>
     <link rel="shortcut icon" href="images/lucky record.png">
+    <link rel="stylesheet" type="text/css" href="js/css/rainbow.css">
 </head>
 
 <body id="body">
-    <div id="my-lucky"></div>
-    <img id="handle" src="images/handle.jpg">
+    <div class="rainbow" id="rainbow">
+        <div id="my-lucky"></div>
+    </div>
+
+    <img id="handle" src="images/OIP-C.png">
     <div id="bottomBar"></div>
 </body>
 
@@ -20,26 +24,27 @@
 <script src="js/lucky-canvas.js"></script>
 <script src="js/logic.js"></script>
 <style>
-    #my-lucky {
-        /* animation: glow 80ms ease-out infinite alternate; */
+    /* #my-lucky {
+        
         display: inline-block;
-    }
-
-    /* @keyframes glow {
-        0% {
-            box-shadow: 0 0 10px rgba(252, 94, 94, .2), inset 0 0 5px rgba(252, 94, 94, .1), 0 1px 0 #f1f503;
-        }
-        100% {
-            border-color: #f3ef09;
-            box-shadow: 0 0 30px rgba(252, 94, 94, .6), inset 0 0 10px rgba(252, 235, 5, 0.966), 0 1px 0 #fffb00;
-        }
+        background-image: url(images/fire.gif);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
     } */
+
     #handle {
-        vertical-align: 500px;
+        /* vertical-align: 400px;
         display: inline-block;
+        margin-left: -4px;
+        height: 280px; */
+        position: absolute;
+        /* bottom: 10%;
+        left: 50%; */
     }
 
     #bottomBar button {
+        margin-top: 10px;
+        /* padding-top: 30px; */
         margin-left: 10px;
         margin-right: 40px;
         margin-bottom: 10px;
@@ -56,25 +61,33 @@
         cursor: pointer;
         min-width: 60px;
     }
+  
+  .in {
+    border-right: 1px solid #76d1f5;
+    border-bottom: 1px solid #76d1f5;
+    border-left: 2px solid rgb(68, 5, 5);
+    border-top: 2px solid rgb(68, 5, 5);
+  }
 </style>
 <script type="text/javascript">
 
     const myLucky = new LuckyCanvas.SlotMachine('#my-lucky', {
-        width: document.documentElement.clientWidth - 440,
-        height: document.documentElement.clientHeight - 50,
+        // width: document.documentElement.clientWidth - 70,
+        width: document.documentElement.clientHeight * 1.56,
+        height: document.documentElement.clientHeight - 90,
         blocks: [
             {
-                padding: '80px',
-                background: '#d0351f', 
-                borderRadius : '30px',
+                padding: '68px',
+                background: '#d0351f',
+                // borderRadius : '30px',
             },
             {
                 padding: '30px',
-                background: '#fff',
-                borderRadius : '20px',
+                background: '#ff7b00',
+                borderRadius: '20px',
             },
             // {imgs: [{
-            //     src: 'imges/slot-bg.png',
+            //     src: 'imges/sic.png',
             //     width: '100%',
             //     height: '100%'
             // }]}
@@ -124,11 +137,20 @@
             return false;
         }
         isGoing = true;
-        turnDown();
+        // tosmall();
+        switchImg();
         playGame();
+
+    }
+
+    function switchImg() {
+        var a = true;
+        var target = document.getElementById('handle');
+        target.classList.add('in');
+
         setTimeout(() => {
-            turnUp();
-        }, 1000);
+            target.classList.remove('in');
+        }, 300);
     }
 
     var current = 0;
@@ -136,14 +158,14 @@
         current = -1;
         var target = document.getElementById('handle');
         target.style.transform = 'scaleY(' + current + ')';
-        target.style['vertical-align'] = '250px';
+        target.style['vertical-align'] = '180px';
     }
 
     function turnUp() {
         current = 1;
         var target = document.getElementById('handle');
         target.style.transform = 'scaleY(' + current + ')';
-        target.style['vertical-align'] = '500px';
+        target.style['vertical-align'] = '400px';
     }
 
     function switchMode(current) {
@@ -156,6 +178,11 @@
         document.getElementById('handle').addEventListener('click', clickImg);
         generateQueue();
 
+        document.getElementById('handle').style.bottom = (document.documentElement.clientHeight * 0.072) + 'px';
+        document.getElementById('handle').style.left = ((document.documentElement.clientHeight * 1.60) * 0.45) + 'px';
+        var rainbow = document.getElementById('rainbow');
+        rainbow.style.height = document.documentElement.clientHeight - 54 + 'px';
+        rainbow.style.width = (document.documentElement.clientHeight * 1.595) + 'px';
         var bottomBar = document.getElementById('bottomBar');
         generateMode(bottomBar, switchMode);
     }
