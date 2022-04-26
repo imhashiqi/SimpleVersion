@@ -108,12 +108,12 @@
         , { field: 'src', width: '25%', title: 'ImgPath', }
         , { field: 's', width: '8%', title: 'S', sort: true }
         , { field: 'group', width: '10%', title: 'Group', sort: true }
-        , { fixed: 'right', width: '10%', title: 'Action', align: 'center', toolbar: '#barDemo' } //minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+        , { fixed: 'right', width: '10%', title: 'Action', align: 'center', toolbar: '#barDemo' } 
       ]]
       , page: {
         layout: ['prev', 'page', 'next', 'count', 'limit', 'refresh', 'skip']//自定义布局顺序 
         , limit: 100	//初始  每页几条数据
-        , limits: [100, 150]	//可以选择的 每页几条数据 
+        , limits: [20, 50, 100, 150, 200]	//可以选择的 每页几条数据 
         , groups: 10 	//最多几个跳页按钮
         , first: false //不显示首页
         , last: false //不显示尾页
@@ -145,7 +145,8 @@
             title: 'Add Prize',
             area: ['650px', '400px'],
             btnAlign: 'c',
-            closeBtn: '1',//右上角的关闭
+            closeBtn: '1',
+            anim: 1,
             content: `<form class="layui-form" action="">
   <div class="layui-form-item">
     <label class="layui-form-label">PrizeName :</label>
@@ -174,6 +175,9 @@
   </div>
 </form>`,
             btn: ['Add', 'Cancel'],
+            success: function(layero, index){
+              document.getElementById('name').focus();            
+            },
             yes: function (index, layero) {
               var name = $('#name').val();
               var path = $('#path').val();
@@ -206,7 +210,8 @@
               {
                 page:
                 {
-                  curr: 1
+                  curr: 1,
+                  theme: '#393D49',
                 },
                 data: search(val)
               });
@@ -260,9 +265,10 @@
         layer.open({
           //formType: 2,//这里依然指定类型是多行文本框，但是在下面content中也可绑定多行文本框
           title: 'Modify',
-          area: ['500px', '250px'],
+          area: ['400px', '250px'],
           btnAlign: 'c',
-          closeBtn: '1',//右上角的关闭
+          closeBtn: '1',
+          anim: 5,
           content: `<form class="layui-form" action="">
   <div class="layui-form-item">
     <label class="layui-form-label">PrizeName :</label>
@@ -273,11 +279,14 @@
   <div class="layui-form-item">
     <label class="layui-form-label">S :</label>
     <div class="layui-input-block">
-      <input type="text"  id='us' name="title" required  lay-verify="required" placeholder="please enter s" class="layui-input" value ='${data.s}'>
+      <input type="text"  id='us' name="title" style='width: 200px;' required lay-verify="required" placeholder="please enter s" class="layui-input" value ='${data.s}'>
     </div>
   </div>
 </form>`,
           btn: ['Modify', 'Cancel'],
+          success: function(layero, index){
+            document.getElementById('us').focus();            
+          },
           yes: function (index, layero) {
             var s = $('#us').val();
 

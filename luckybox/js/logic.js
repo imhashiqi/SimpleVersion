@@ -37,7 +37,7 @@ var getPrice = function () {
 
 var getOrders = function () {
   var data = Array.from(Array(getPrice().length).keys()).sort(randomsort);
-  console.log(data);
+  // console.log(data);
   return data;
 };
 

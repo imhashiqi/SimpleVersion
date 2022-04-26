@@ -63,8 +63,8 @@
     }
   
   .in {
-    border-right: 1px solid #76d1f5;
-    border-bottom: 1px solid #76d1f5;
+    border-right: 1px solid #c96527;
+    border-bottom: 1px solid #c96527;
     border-left: 2px solid rgb(68, 5, 5);
     border-top: 2px solid rgb(68, 5, 5);
   }
@@ -73,13 +73,13 @@
 
     const myLucky = new LuckyCanvas.SlotMachine('#my-lucky', {
         // width: document.documentElement.clientWidth - 70,
-        width: document.documentElement.clientHeight * 1.56,
-        height: document.documentElement.clientHeight - 90,
+        width: document.documentElement.clientHeight * 1.555,
+        height: document.documentElement.clientHeight - 94,
         blocks: [
             {
                 padding: '68px',
                 background: '#d0351f',
-                // borderRadius : '30px',
+                borderRadius : '13px',
             },
             {
                 padding: '30px',
@@ -127,6 +127,7 @@
             myLucky.stop(index);
             setTimeout(() => {
                 isGoing = false;
+                rainbow.classList.remove('activebow');
             }, 2000);
         }, 3000);
     }
@@ -138,9 +139,9 @@
         }
         isGoing = true;
         // tosmall();
+        rainbow.classList.add('activebow');
         switchImg();
         playGame();
-
     }
 
     function switchImg() {
@@ -178,11 +179,13 @@
         document.getElementById('handle').addEventListener('click', clickImg);
         generateQueue();
 
-        document.getElementById('handle').style.bottom = (document.documentElement.clientHeight * 0.072) + 'px';
-        document.getElementById('handle').style.left = ((document.documentElement.clientHeight * 1.60) * 0.45) + 'px';
+        var button =  document.getElementById('handle');
+        button.style.bottom = (document.documentElement.clientHeight * 0.0762) + 'px';
+        button.style.left = ((document.documentElement.clientHeight * 1.60) * 0.45) + 'px';
         var rainbow = document.getElementById('rainbow');
         rainbow.style.height = document.documentElement.clientHeight - 54 + 'px';
         rainbow.style.width = (document.documentElement.clientHeight * 1.595) + 'px';
+        
         var bottomBar = document.getElementById('bottomBar');
         generateMode(bottomBar, switchMode);
     }

@@ -21,6 +21,10 @@ var getAllResult = function () {
   return JSON.parse(localStorage.getItem("allResult")) || [];
 };
 
+var getMode = function(){
+  return JSON.parse(localStorage.getItem('mode')) || 0;
+}
+
 var defaultPath = "images/";
 var addItem = function (name, path, group, s = 0) {
   var isSucess = false;
@@ -81,7 +85,6 @@ var updateItem = function (id, s, group) {
     data[i] = thisItem;
     thisSuccess = true;
   }
-  // var item = data.filter((x) => x.id == id);
   if (!thisSuccess) {
     warnAlert(`no found id[${id}], please refesh page and try again`);
     return false;
@@ -98,7 +101,8 @@ var updateItem = function (id, s, group) {
   }
   localStorage.setItem("list", JSON.stringify(list));
   localStorage.setItem("soures", JSON.stringify(scoures));
-  updateS(targetIndex, data);
+  if(getMode() == group)
+    updateS(targetIndex, data);
   isSucess = true;
   return isSucess;
 };
