@@ -36,9 +36,7 @@ var getPrice = function () {
 };
 
 var getOrders = function () {
-  var data = Array.from(Array(getPrice().length).keys()).sort(randomsort);
-  // console.log(data);
-  return data;
+ return Array.from(Array(getPrice().length).keys()).sort(randomsort);   
 };
 
 function randomsort(a, b) {
@@ -96,10 +94,7 @@ function getScore(data, index) {
 }
 
 var lotteryLogic = function () {
-  // 排列组合表
   var result = getAllResult();
-  // 遍历排列组合表 + 随机数
-  //正序排列返回第一个结果
   var diff = result
     .map((x) =>
       Object.assign(
