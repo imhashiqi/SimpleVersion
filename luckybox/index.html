@@ -17,7 +17,9 @@
     </div>
 
     <img id="handle" src="js/img/OIP-C.png">
-    <div id="bottomBar"></div>
+    <div id="bottomBar">
+        <button id="start">Start</button>
+    </div>
 </body>
 
 <script type="text/javascript" src="js/vue.js"></script>
@@ -188,6 +190,15 @@
         
         var bottomBar = document.getElementById('bottomBar');
         generateMode(bottomBar, switchMode);
+        document.getElementById('start').addEventListener('click', clickImg);
+        
+        document.onkeyup = keyupEvent;  
+    }
+
+    function keyupEvent(e){
+        if(e && e.key == 'Enter'){
+            clickImg();
+        }
     }
 </script>
 </body>

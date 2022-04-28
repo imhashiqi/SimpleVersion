@@ -116,10 +116,10 @@ var generateMode = function (targetDocument, callback) {
   for (var item in data) {
     var currentItems = data[item];
     if ((currentItems || []).length == 0) continue;
-    html += `<button value='${item}'>${item}</button>`;
+    html += `<button value='${item}' class='mo'>${item}</button>`;
 }
-    targetDocument.innerHTML = html;
-    var elements = targetDocument.getElementsByTagName('button');
+    targetDocument.innerHTML += html;
+    var elements = targetDocument.getElementsByClassName('mo');
     for(var i = 0; i < elements.length; i ++){
         var element = elements[i];
         element.onclick = callback;
